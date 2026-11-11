@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profit Calculator</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem;
+        background-color: #f4f4f4;
+        color: #222;
+        font-family: Arial, sans-serif;
+      }
+
+      main {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 0.5rem;
+      }
+
+      form {
+        display: grid;
+        gap: 0.5rem;
+        max-width: 20rem;
+      }
+
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        font: inherit;
+      }
+
+      button {
+        padding: 0.75rem;
+        border: 0;
+        border-radius: 0.25rem;
+        background-color: #1769aa;
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #10558c;
+      }
+
+      #results {
+        margin-top: 2rem;
+      }
+
+      #results p {
+        display: flex;
+        justify-content: space-between;
+        max-width: 20rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Profit Calculator</h1>
+      <p>Enter the price and costs for an item.</p>
+
+      <form id="profit-form">
+        <label for="buy-price">Buy price</label>
+        <input id="buy-price" name="buyPrice" type="number" min="0" step="0.01" required />
+
+        <label for="sell-price">Sell price</label>
+        <input id="sell-price" name="sellPrice" type="number" min="0" step="0.01" required />
+
+        <label for="selling-fees">Selling fees</label>
+        <input id="selling-fees" name="sellingFees" type="number" min="0" step="0.01" />
+
+        <label for="postage">Postage</label>
+        <input id="postage" name="postage" type="number" min="0" step="0.01" />
+
+        <label for="other-costs">Other costs</label>
+        <input id="other-costs" name="otherCosts" type="number" min="0" step="0.01" />
+
+        <button type="submit">Calculate</button>
+      </form>
+
+      <section id="results" aria-live="polite" hidden>
+        <h2>Results</h2>
+        <p>Total costs: <output id="total-costs"></output></p>
+        <p>Profit: <output id="profit"></output></p>
+        <p>Profit margin: <output id="profit-margin"></output></p>
+        <p>ROI: <output id="roi"></output></p>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("profit-form");
+      const results = document.getElementById("results");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const buyPrice = Number(document.getElementById("buy-price").value);
+        const sellPrice = Number(document.getElementById("sell-price").value);
+        const sellingFees = Number(document.getElementById("selling-fees").value);
+        const postage = Number(document.getElementById("postage").value);
+        const otherCosts = Number(document.getElementById("other-costs").value);
+
+        const totalCosts = buyPrice + sellingFees + postage + otherCosts;
+        const profit = sellPrice - totalCosts;
+        const profitMargin = sellPrice === 0 ? null : (profit / sellPrice) * 100;
+        const roi = totalCosts === 0 ? null : (profit / totalCosts) * 100;
+
+        const formatAmount = (amount) => amount.toFixed(2);
+        const formatPercentage = (percentage) =>
+          percentage === null ? "Not available" : `${percentage.toFixed(2)}%`;
+
+        document.getElementById("total-costs").textContent =
+          formatAmount(totalCosts);
+        document.getElementById("profit").textContent = formatAmount(profit);
+        document.getElementById("profit-margin").textContent =
+          formatPercentage(profitMargin);
+        document.getElementById("roi").textContent = formatPercentage(roi);
+
+        results.hidden = false;
+      });
+    </script>
+  </body>
+</html>
